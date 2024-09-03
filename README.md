@@ -31,6 +31,3 @@ This project aims to develop a RESTful web service for managing information abou
     * Exporting all events for a given time interval in iCalendar format.
 * **Import/Export:**
     * Exporting and importing classroom configuration in CSV format.
-
-## Architecture
-[Insert a diagram of the system architecture here, if available. For example, a UML diagram showing the entities, controllers, and services.]
