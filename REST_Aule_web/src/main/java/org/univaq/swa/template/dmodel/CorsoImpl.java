@@ -14,7 +14,7 @@ import framework.data.DataItemImpl;
 public class CorsoImpl extends DataItemImpl<Integer> implements Corso {
     
     private String nome;
-    private ResponsabileImpl responsabile;
+    private Responsabile responsabile;
 
     @Override
     public String getNome() {
@@ -22,7 +22,7 @@ public class CorsoImpl extends DataItemImpl<Integer> implements Corso {
     }
 
     @Override
-    public ResponsabileImpl getResponsabile() {
+    public Responsabile getResponsabile() {
         return responsabile;
     }
 
@@ -32,7 +32,7 @@ public class CorsoImpl extends DataItemImpl<Integer> implements Corso {
     }
 
     @Override
-    public void setResponsabile(ResponsabileImpl responsabile) {
+    public void setResponsabile(Responsabile responsabile) {
         this.responsabile = responsabile;
     }
     
