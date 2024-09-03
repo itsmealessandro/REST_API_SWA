@@ -3,6 +3,8 @@
 ## Description
 This project aims to develop a RESTful web service for managing information about classrooms, events, and assignments. The service is based on a MySQL database and uses Java with JAX-RS to implement REST APIs.
 
+<img src="REST_API.png" alt="Architecture" width="500"/>
+
 ## Technologies Used
 * **Backend:**
     * Java
