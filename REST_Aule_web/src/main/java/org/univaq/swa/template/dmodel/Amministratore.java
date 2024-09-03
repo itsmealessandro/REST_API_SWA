@@ -2,7 +2,7 @@ package org.univaq.swa.template.dmodel;
 
 
 
-public class AmministratoreImpl{
+public class Amministratore{
 
     private String username;
     private String password;
