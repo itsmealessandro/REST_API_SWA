@@ -18,7 +18,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
-@Path("aule")
+@Path("collezioni")
 public class CollezioniRes {
 
   private static final String DS_NAME = "java:comp/env/jdbc/myaule";
