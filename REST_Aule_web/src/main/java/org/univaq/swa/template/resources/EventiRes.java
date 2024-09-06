@@ -23,7 +23,7 @@ public class EventiRes {
 
   private static final String DS_NAME = "java:comp/env/jdbc/myaule";
   private static final String SQL_SELECT_AUTHOR = "SELECT * FROM author WHERE ID=?";
-  private static final String SQL_SELECT_EVENTO_BY_ID = "SELECT * FROM evento WHERE ID=?";
+  private static final String SQL_SELECT_EVENTO_BY_ID = "SELECT * FROM Evento WHERE ID=?";
 
   private static Connection getPooledConnection() throws NamingException, SQLException {
     InitialContext ctx = new InitialContext();
@@ -54,7 +54,16 @@ public class EventiRes {
   }
 
   @GET
-  @Path("{eID:[0-9]+")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response testEventi() {
+    HashMap<String, String> testMap = new HashMap<>();
+    testMap.put("myTest", "eventoTest");
+
+    return Response.ok(testMap).build();
+  }
+
+  @GET
+  @Path("{eID:[0-9]+}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getEventoByID(@PathParam("eID") int eID) throws RESTWebApplicationException {
 
@@ -86,26 +95,31 @@ public class EventiRes {
 
   }
 
-  @GET
-  @Path("{name: [a-zA-Z]+}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getNamedItem(@PathParam("name") String name) throws RESTWebApplicationException {
-    try {
-      List<String> l = new ArrayList<>();
-      try (Connection connection = getPooledConnection();
-          PreparedStatement ps = connection.prepareStatement(SQL_SELECT_AUTHOR)) {
-        ps.setString(1, "%" + name + "%");
-        try (ResultSet rs = ps.executeQuery()) {
-          while (rs.next()) {
-            l.add(rs.getString("surname") + " " + rs.getString("name"));
-          }
-        }
-      }
-      return Response.ok(l).build();
-    } catch (SQLException ex) {
-      throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-    } catch (NamingException ex) {
-      throw new RESTWebApplicationException("DB: " + ex.getMessage());
-    }
-  }
+  /*
+   * @GET
+   * 
+   * @Path("{name: [a-zA-Z]+}")
+   * 
+   * @Produces(MediaType.APPLICATION_JSON)
+   * public Response getNamedItem(@PathParam("name") String name) throws
+   * RESTWebApplicationException {
+   * try {
+   * List<String> l = new ArrayList<>();
+   * try (Connection connection = getPooledConnection();
+   * PreparedStatement ps = connection.prepareStatement(SQL_SELECT_AUTHOR)) {
+   * ps.setString(1, "%" + name + "%");
+   * try (ResultSet rs = ps.executeQuery()) {
+   * while (rs.next()) {
+   * l.add(rs.getString("surname") + " " + rs.getString("name"));
+   * }
+   * }
+   * }
+   * return Response.ok(l).build();
+   * } catch (SQLException ex) {
+   * throw new RESTWebApplicationException("SQL: " + ex.getMessage());
+   * } catch (NamingException ex) {
+   * throw new RESTWebApplicationException("DB: " + ex.getMessage());
+   * }
+   * }
+   */
 }
