@@ -36,18 +36,20 @@ public class EventiRes {
     HashMap<String, String> evento = new HashMap<>();
 
     // Estrazione dei valori dal ResultSet e popolamento della HashMap
+    // Estrazione dei valori dal ResultSet e popolamento della HashMap
     evento.put("ID", String.valueOf(rs.getInt("ID")));
+    evento.put("IDMaster", String.valueOf(rs.getInt("IDMaster")));
     evento.put("nome", rs.getString("nome"));
-    evento.put("luogo", rs.getString("luogo"));
-    evento.put("edificio", rs.getString("edificio"));
-    evento.put("piano", String.valueOf(rs.getInt("piano")));
-    evento.put("capienza", String.valueOf(rs.getInt("capienza")));
-    evento.put("preseElettriche", String.valueOf(rs.getInt("preseElettriche")));
-    evento.put("preseRete", String.valueOf(rs.getInt("preseRete")));
-    evento.put("note", rs.getString("note"));
-    evento.put("IDAttrezzatura", String.valueOf(rs.getInt("IDAttrezzatura")));
-    evento.put("IDDipartimento", String.valueOf(rs.getInt("IDDipartimento")));
+    evento.put("oraInizio", rs.getString("oraInizio"));
+    evento.put("oraFine", rs.getString("oraFine"));
+    evento.put("descrizione", rs.getString("descrizione"));
+    evento.put("ricorrenza", rs.getString("ricorrenza"));
+    evento.put("Data", rs.getString("Data"));
+    evento.put("dataFineRicorrenza", rs.getString("dataFineRicorrenza"));
+    evento.put("tipologiaEvento", rs.getString("tipologiaEvento"));
     evento.put("IDResponsabile", String.valueOf(rs.getInt("IDResponsabile")));
+    evento.put("IDCorso", String.valueOf(rs.getInt("IDCorso")));
+    evento.put("IDAula", String.valueOf(rs.getInt("IDAula")));
 
     // Restituzione della HashMap popolata
     return evento;
