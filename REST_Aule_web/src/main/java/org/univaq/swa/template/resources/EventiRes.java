@@ -22,7 +22,6 @@ import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 public class EventiRes {
 
   private static final String DS_NAME = "java:comp/env/jdbc/myaule";
-  private static final String SQL_SELECT_AUTHOR = "SELECT * FROM author WHERE ID=?";
   private static final String SQL_SELECT_EVENTO_BY_ID = "SELECT * FROM Evento WHERE ID=?";
 
   private static Connection getPooledConnection() throws NamingException, SQLException {
@@ -31,7 +30,7 @@ public class EventiRes {
     return ds.getConnection();
   }
 
-  private HashMap<String, String> createEvento(ResultSet rs) throws SQLException {
+  HashMap<String, String> createEvento(ResultSet rs) throws SQLException {
     // Creazione della HashMap per memorizzare i valori dell'evento
     HashMap<String, String> evento = new HashMap<>();
 
@@ -64,6 +63,7 @@ public class EventiRes {
     return Response.ok(testMap).build();
   }
 
+  // Ritorna Un Evento dato L'ID
   @GET
   @Path("{eID:[0-9]+}")
   @Produces(MediaType.APPLICATION_JSON)
