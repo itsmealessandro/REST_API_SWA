@@ -1,17 +1,18 @@
 package org.univaq.swa.template.resources;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.time.DayOfWeek;
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -40,6 +41,10 @@ public class CollezioniRes {
   private static final String S_EVENTI_SETTIMANALI_BY_AULA = "SELECT *FROM Evento AS ev"
       + " INNER JOIN Aula AS au ON ev.IDAula = au.ID"
       + " AND au.ID = ? AND ev.Data BETWEEN ? AND ?";
+
+  private static final String S_EVENTI_BY_DATES = "SELECT *\n" +
+      "FROM Evento\n" +
+      "WHERE Data BETWEEN ? AND ?";
 
   private static Connection getPooledConnection() throws NamingException, SQLException {
     InitialContext ctx = new InitialContext();
@@ -140,4 +145,61 @@ public class CollezioniRes {
     }
 
   }
+
+  // Esporta eventi in csv
+  @GET
+  @Path("esporta/{dataInizio}/{dataFine}")
+  public Response esprtaEventiCSV(@Context UriInfo uriinfo,
+      @PathParam("dataInizio") String dataI,
+      @PathParam("dataFine") String dataF) throws IOException {
+    try (Connection connection = getPooledConnection();
+        PreparedStatement ps = connection.prepareStatement(S_EVENTI_BY_DATES)) {
+      // NOTE: Conversione date
+      LocalDate dataInizio = LocalDate.parse(dataI);
+      LocalDate dataFine = LocalDate.parse(dataF);
+      Date dataISql = Date.valueOf(dataInizio);
+      Date dataFSql = Date.valueOf(dataFine);
+      ps.setDate(1, dataISql);
+      ps.setDate(2, dataFSql);
+
+      ArrayList<Map<String, String>> listaEventi = new ArrayList<>();
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          Map<String, String> evento = EventiRes.createEvento(rs);
+          listaEventi.add(evento);
+        }
+        return esportaEventi(listaEventi);
+      }
+    } catch (SQLException ex) {
+      throw new RESTWebApplicationException("SQL: " + ex.getMessage());
+    } catch (NamingException ex) {
+      throw new RESTWebApplicationException("DB: " + ex.getMessage());
+    }
+  }
+
+  // Creazione del file CSV
+  private Response esportaEventi(List<Map<String, String>> listaEventi) throws IOException {
+    StringWriter csvWriter = new StringWriter();
+    csvWriter.append("nome,descrizione,data,oraInizio,oraFine,tipologia,responsabileID,aulaID,corsoID\n");
+    for (Map<String, String> evento : listaEventi) {
+      csvWriter.append(evento.get("nome")).append(",");
+      csvWriter.append(evento.get("descrizione")).append(",");
+      csvWriter.append(evento.get("data")).append(",");
+      csvWriter.append(evento.get("oraInizio")).append(",");
+      csvWriter.append(evento.get("oraFine")).append(",");
+      csvWriter.append(evento.get("tipologia")).append(",");
+      csvWriter.append(evento.get("responsabileID")).append(",");
+      csvWriter.append(evento.get("aulaID")).append(",");
+      csvWriter.append(evento.get("corsoID")).append("\n");
+    }
+
+    String csvOutput = csvWriter.toString();
+
+    return Response.ok(csvOutput)
+        .header("Content-Disposition", "attachment; filename=eventi.csv")
+        .header("Content-Type", "text/csv")
+        .build();
+
+  }
+
 }

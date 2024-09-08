@@ -9,6 +9,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -54,7 +55,7 @@ public class EventiRes {
     return ds.getConnection();
   }
 
-  HashMap<String, String> createEvento(ResultSet rs) throws SQLException {
+  static HashMap<String, String> createEvento(ResultSet rs) throws SQLException {
     // Creazione della HashMap per memorizzare i valori dell'evento
     HashMap<String, String> evento = new HashMap<>();
 
@@ -67,12 +68,12 @@ public class EventiRes {
     evento.put("oraFine", rs.getString("oraFine"));
     evento.put("descrizione", rs.getString("descrizione"));
     evento.put("ricorrenza", rs.getString("ricorrenza"));
-    evento.put("Data", rs.getString("Data"));
+    evento.put("data", rs.getDate("Data").toString());
     evento.put("dataFineRicorrenza", rs.getString("dataFineRicorrenza"));
-    evento.put("tipologiaEvento", rs.getString("tipologiaEvento"));
-    evento.put("IDResponsabile", String.valueOf(rs.getInt("IDResponsabile")));
-    evento.put("IDCorso", String.valueOf(rs.getInt("IDCorso")));
-    evento.put("IDAula", String.valueOf(rs.getInt("IDAula")));
+    evento.put("tipologia", rs.getString("tipologiaEvento"));
+    evento.put("responsabileID", String.valueOf(rs.getInt("IDResponsabile")));
+    evento.put("corsoID", String.valueOf(rs.getInt("IDCorso")));
+    evento.put("aulaID", String.valueOf(rs.getInt("IDAula")));
 
     // Restituzione della HashMap popolata
     return evento;
