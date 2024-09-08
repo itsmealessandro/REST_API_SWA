@@ -7,6 +7,8 @@ import java.util.Set;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.univaq.swa.framework.jackson.ObjectMapperContextResolver;
+import org.univaq.swa.framework.security.AuthLoggedFilter;
+import org.univaq.swa.framework.security.AuthenticationRes;
 import org.univaq.swa.framework.security.CORSFilter;
 import org.univaq.swa.template.resources.AuleRes;
 import org.univaq.swa.template.resources.CollezioniRes;
@@ -30,6 +32,10 @@ public class RESTApp extends Application {
     // usare i suoi servizi di serializzazione e
     // deserializzazione JSON
     c.add(JacksonJsonProvider.class);
+
+    c.add(AuthenticationRes.class);
+    // esempio di autenticazione
+    c.add(AuthLoggedFilter.class);
 
     // necessario se vogliamo una (de)serializzazione custom di qualche classe
     c.add(ObjectMapperContextResolver.class);
