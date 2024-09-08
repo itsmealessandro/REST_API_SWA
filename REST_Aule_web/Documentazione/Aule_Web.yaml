@@ -1,27 +1,19 @@
 openapi: "3.0.2"
 info:
-  title: "Aulery"
-  description: "Specifica progetto Aulery"
+  title: "REST_Aule_Web"
+  description: "Specifica progetto REST_Aule_Web"
   version: "1.0"
-  termsOfService: "https://aulery.it/terms"
-  contact:
-    name: "Aulery API by Ansima"
-    url: "https://aulery.it/info"
-    email: "contact@aulery.it"
-  license:
-    name: "CC Aulery1.0(CC AU 1.0)"
-    url: "https://aulery.it"
 tags:
   - name: "Aule"
     description: "Operazioni riguardanti le aule"
   - name: "Collezioni"
-    description: "Operazioni riguardanti le liste di eventi"
+    description: "Operazioni riguardanti Collezioni di elementi"
   - name: "Eventi"
     description: "Operazioni riguardanti gli eventi"
   - name: "Autenticazione"
     description: "Operazioni riguardanti l'autenticazione"
 servers:
-  - url: "localhost/api/"
+  - url: "localhost/REST_Aule_Web/"
     description: Server LocalHost
 components:
   schemas:
@@ -138,7 +130,7 @@ components:
         - SEMINARIO
         - PARZIALE
         - RIUNIONE
-        - LAUREA
+        - LAUREE
         - ALTRO
   parameters:
     username:
@@ -168,13 +160,6 @@ components:
       name: aulaID
       in: path
       description: Id dell'aula
-      required: true
-      schema:
-        type: integer
-    areaID:
-      name: areaID
-      in: path
-      description: Id dell'area
       required: true
       schema:
         type: integer
@@ -303,8 +288,6 @@ paths:
       operationId: esportaAuleCSV
       tags:
         - Aule
-      security:
-        - bearerAuth: []
       responses:
         200:
           description: Esportazione riuscita con successo
@@ -410,9 +393,9 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/GeneralError'
-  /rest/eventi/crea:
+  /rest/eventi/nuovo:
     post:
-      summary: Crea evento
+      summary: Crea nuovo evento
       description: Operazione che permette di aggiungere un evento al sistema.
       operationId: creaEvento
       tags: 
@@ -441,7 +424,7 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/GeneralError'
-  /rest/eventi/{eventoID}/modifica:
+  /rest/eventi/modifica:
     put:
       summary: Modfica evento
       description: Operazione che permette di modificare una evento già presente nel sistema.
@@ -484,15 +467,13 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/GeneralError' 
-  /rest/eventi/esporta/{dataInizio}/{dataFine}:
+  /rest/collezioni/esporta/{dataInizio}/{dataFine}:
     get:
       summary: Esportazione eventi basati sulle date
       description: Operazione che permette di esportare una lista di eventi selezionando un intervallo di tempo specifico.
       operationId: esportaEventiCSV
       tags:
         - Collezioni
-      security:
-        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/dataInizio'
         - $ref: '#/components/parameters/dataFine'
@@ -532,15 +513,13 @@ paths:
           $ref: '#/components/responses/NotFoundError'   
         500:
           $ref: '#/components/responses/GeneralError'
-  /rest/collezioni/{areaID}/eventiTreOre:
+  /rest/collezioni/eventiTreOre:
     get:
       summary: Lista eventi delle prossime tre ore
       description: Operazione che permette di ottenere una lista di eventi attuali e delle prossime tre ore di una intera area.
       operationId: getEventiTreOre
       tags: 
         - Collezioni
-      parameters:
-      - $ref: '#/components/parameters/areaID'
       responses:
         200:
           description: Lista ottenuta con successo
