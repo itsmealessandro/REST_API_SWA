@@ -2,7 +2,6 @@ package org.univaq.swa.template.resources;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -37,8 +36,17 @@ public class EventiRes {
       + "(IDMaster, nome, oraInizio, oraFine, descrizione, ricorrenza, Data,"
       + " dataFineRicorrenza, tipologiaEvento, IDResponsabile, IDCorso, IDAula) "
       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-  ;
+  private static final String U_EVENTO = "UPDATE Evento\n"
+      + "SET nome = ?,\n"
+      + "    oraInizio = ?,\n"
+      + "    oraFine = ?,\n"
+      + "    descrizione = ?,\n"
+      + "    Data = ?,\n"
+      + "    tipologiaEvento = ?,\n"
+      + "    IDResponsabile = ?,\n"
+      + "    IDCorso = ?,\n"
+      + "    IDAula = ?\n"
+      + "WHERE ID = ?";
 
   private static Connection getPooledConnection() throws NamingException, SQLException {
     InitialContext ctx = new InitialContext();
@@ -120,7 +128,7 @@ public class EventiRes {
     return Response.ok(hm.get("a")).build();
   }
 
-  @PUT
+  @POST
   @Consumes("application/json")
   @Path("nuovo")
   public Response createEvento(Map<String, Object> e_map) {
@@ -163,4 +171,45 @@ public class EventiRes {
     }
   }
 
+  @PUT
+  @Consumes("application/json")
+  @Path("modifica")
+  public Response updateEvento(Map<String, Object> e_map) {
+
+    try (
+        // Preparo la connessione al DB
+        Connection connection = getPooledConnection();
+        PreparedStatement ps = connection.prepareStatement(U_EVENTO)) {
+
+      // NOTE: Conversione a SQL
+      LocalTime oraInizioL = LocalTime.parse((String) e_map.get("oraInizio"));
+      LocalTime oraFineL = LocalTime.parse((String) e_map.get("oraFine"));
+      Time oraInizioSql = Time.valueOf(oraInizioL);
+      Time oraFineSql = Time.valueOf(oraFineL);
+      LocalDate localDate = LocalDate.parse((String) e_map.get("data"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      Date dateSql = Date.valueOf(localDate);
+
+      ps.setString(1, (String) e_map.get("nome"));
+      ps.setTime(2, oraInizioSql);
+      ps.setTime(3, oraFineSql);
+      ps.setString(4, (String) e_map.get("descrizione"));
+      ps.setDate(5, dateSql);
+      ps.setString(6, (String) e_map.get("tipologia"));
+
+      ps.setInt(7, Integer.valueOf((String) e_map.get("responsabileID")));
+
+      ps.setInt(8, Integer.valueOf((String) e_map.get("corsoID")));
+
+      ps.setInt(9, Integer.valueOf((String) e_map.get("aulaID")));
+
+      ps.setInt(10, Integer.valueOf((String) e_map.get("id")));
+
+      ps.executeUpdate();
+      return Response.ok("Operazione Riuscita").build();
+    } catch (SQLException ex) {
+      throw new RESTWebApplicationException("SQL: " + ex.getMessage());
+    } catch (NamingException ex) {
+      throw new RESTWebApplicationException("DB: " + ex.getMessage());
+    }
+  }
 }
