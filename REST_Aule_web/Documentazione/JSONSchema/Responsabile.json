@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Responsabile",
+  "type": "object",
+  "properties": {
+    "ID": {
+      "type": "integer"
+    },
+    "nome": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "cognome": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "email": {
+      "type": "string",
+      "maxLength": 100,
+      "format": "email"
+    }
+  },
+  "required": ["ID", "nome", "cognome", "email"]
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Evento",
+  "type": "object",
+  "properties": {
+    "ID": {
+      "type": "integer"
+    },
+    "IDMaster": {
+      "type": ["integer", "null"]
+    },
+    "nome": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "oraInizio": {
+      "type": ["string", "null"],
+      "pattern": "^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d)$"
+    },
+    "oraFine": {
+      "type": ["string", "null"],
+      "pattern": "^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d)$"
+    },
+    "descrizione": {
+      "type": ["string", "null"]
+    },
+    "ricorrenza": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "Data": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "dataFineRicorrenza": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "tipologiaEvento": {
+      "type": ["string", "null"],
+      "maxLength": 100
+    },
+    "IDResponsabile": {
+      "type": ["integer", "null"]
+    },
+    "IDCorso": {
+      "type": ["integer", "null"]
+    },
+    "IDAula": {
+      "type": ["integer", "null"]
+    }
+  },
+  "required": ["ID", "ricorrenza"]
+}

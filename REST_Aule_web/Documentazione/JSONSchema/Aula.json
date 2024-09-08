@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Aula",
+  "type": "object",
+  "properties": {
+    "ID": {
+      "type": "integer"
+    },
+    "nome": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "luogo": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "edificio": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "piano": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "capienza": {
+      "type": "integer"
+    },
+    "preseElettriche": {
+      "type": ["integer", "null"]
+    },
+    "preseRete": {
+      "type": ["integer", "null"]
+    },
+    "note": {
+      "type": ["string", "null"]
+    },
+    "IDAttrezzatura": {
+      "type": ["integer", "null"]
+    },
+    "IDDipartimento": {
+      "type": ["integer", "null"]
+    },
+    "IDResponsabile": {
+      "type": ["integer", "null"]
+    }
+  },
+  "required": ["ID", "nome", "luogo", "edificio", "piano", "capienza"]
+}
