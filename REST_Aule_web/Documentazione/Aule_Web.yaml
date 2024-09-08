@@ -1,0 +1,556 @@
+openapi: "3.0.2"
+info:
+  title: "Aulery"
+  description: "Specifica progetto Aulery"
+  version: "1.0"
+  termsOfService: "https://aulery.it/terms"
+  contact:
+    name: "Aulery API by Ansima"
+    url: "https://aulery.it/info"
+    email: "contact@aulery.it"
+  license:
+    name: "CC Aulery1.0(CC AU 1.0)"
+    url: "https://aulery.it"
+tags:
+  - name: "Aule"
+    description: "Operazioni riguardanti le aule"
+  - name: "Collezioni"
+    description: "Operazioni riguardanti le liste di eventi"
+  - name: "Eventi"
+    description: "Operazioni riguardanti gli eventi"
+  - name: "Autenticazione"
+    description: "Operazioni riguardanti l'autenticazione"
+servers:
+  - url: "localhost/api/"
+    description: Server LocalHost
+components:
+  schemas:
+    Amministratore:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+    Dipartimento:
+      type: object
+      properties:
+        nome:
+          type: string
+        descrizione:
+          type: string
+    Corso:
+      type: object
+      properties:
+        nome:
+          type: string
+        responsabile:
+          $ref: '#/components/schemas/Responsabile'
+    Evento:
+      type: object
+      properties:
+        idMaster:
+          type: integer
+        nome:
+          type: string
+        descrizione:
+          type: string
+        data:
+          type: string
+          format: date
+        dataFineRicorrenza:
+          type: string
+          format: date
+        oraInizio:
+          type: string
+          format: time
+        oraFine:
+          type: string
+          format: time
+        isRicorrente:
+          type: boolean
+        tipologiaEvento:
+          $ref: '#/components/schemas/TipologiaEvento'
+        ricorrenza:
+          $ref: '#/components/schemas/Ricorrenza'
+        responsabile:
+          $ref: '#/components/schemas/Responsabile'
+        aula:
+          $ref: '#/components/schemas/Aula'
+        corso:
+          $ref: '#/components/schemas/Corso'
+    Aula:
+      type: object
+      properties:
+        nome:
+          type: string
+        luogo:
+          type: string
+        edificio:
+          type: string
+        piano:
+          type: string
+        note:
+          type: string
+        capienza:
+          type: integer
+        preseElettriche:
+          type: integer
+        preseRete:
+          type: integer
+        attrezzature:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attrezzatura'
+        dipartimento:
+          $ref: '#/components/schemas/Dipartimento'
+        responsabile:
+          $ref: '#/components/schemas/Responsabile'  
+    Responsabile:
+      type: object
+      properties:
+        nome:
+          type: string
+        cognome:
+          type: string
+        email:
+          type: string  
+    Attrezzatura:
+      type: object
+      properties:
+        nome:
+          type: string
+        id:
+          type: integer
+    Ricorrenza:
+      type: string
+      enum:
+        - GIORNALIERA
+        - SETTIMANALE
+        - MENSILE
+        - NESSUNA  
+    TipologiaEvento:
+      type: string
+      enum:
+        - LEZIONE
+        - ESAME
+        - SEMINARIO
+        - PARZIALE
+        - RIUNIONE
+        - LAUREA
+        - ALTRO
+  parameters:
+    username:
+      name: username
+      in: query
+      description: Nome utente dell'amministratore
+      required: true
+      schema:
+        type: string
+    password:
+      name: password
+      in: query
+      description: Password dell'amministratore
+      required: true
+      schema:
+        type: string
+        format: password
+    importFile:
+      name: importFile
+      in: header
+      description: File CSV per l'importazione della configurazione aule
+      required: true
+      schema:
+        type: string
+        format: binary  
+    aulaID:
+      name: aulaID
+      in: path
+      description: Id dell'aula
+      required: true
+      schema:
+        type: integer
+    areaID:
+      name: areaID
+      in: path
+      description: Id dell'area
+      required: true
+      schema:
+        type: integer
+    eventoID:
+      name: eventoID
+      in: path
+      description: Id dell'evento
+      required: true
+      schema:
+        type: integer
+    oraInizio:
+      name: oraInizio
+      in: query
+      description: Ora di inizio dell'intervallo di tempo
+      required: true
+      schema:
+        type: string
+        format: time
+    oraFine:
+      name: oraFine
+      in: query
+      description: Ora di fine dell'intervallo di tempo
+      required: true
+      schema:
+        type: string
+        format: time
+    data:
+      name: data
+      in: path
+      description: Data selezionata dall'utente per la visualizzazione degli eventi
+      required: true
+      schema:
+        type: string
+        format: date
+    dataInizio:
+      name: dataInizio
+      in: path
+      description: Data di inizio intervallo di tempo
+      required: true
+      schema:
+        type: string
+        format: date
+    dataFine:
+      name: dataFine
+      in: path
+      description: Data di fine intervallo di tempo
+      required: true
+      schema:
+        type: string
+        format: date
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: internalToken
+  responses:
+    GeneralError:
+      description: Errore 500, Errore interno
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "Errore 500, Errore interno"
+    UnauthorizedError:
+      description: Bearer token mancante o non valido
+    NotFoundError:
+      description: Errore 404, Elemento non trovato
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "Errore 404, Elemento non trovato"   
+paths:
+  /rest/auth/login:
+    post:
+      summary: Login amministratore
+      description: Operazione che permette di effettuare il login inserendo con username e password. 
+      operationId: doLogin
+      tags: 
+        - Autenticazione      
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+      responses:
+        200:
+          description: Login effettuato con successo
+          content:
+            text/plain:
+              schema:
+                type: string
+          headers:
+            Authorization:
+              schema:
+                type: string
+                pattern: 'Bearer [a-z0-9A-Z-]+'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/auth/logout:
+    delete:
+      operationId: doLogout
+      tags: 
+        - Autenticazione      
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Logout effettuato con successo
+        401:
+          $ref: '#/components/responses/UnauthorizedError'          
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/aule/esporta:
+    get:
+      summary: Esportazione aule
+      description: Operazione che permette di esportare un file CSV contenente una lista di tutte le aule.
+      operationId: esportaAuleCSV
+      tags:
+        - Aule
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Esportazione riuscita con successo
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/aule/importazione:
+    post:
+      summary: Importazione aule
+      description: Operazione che permette di importare un file CSV contenente una lista di aule.
+      operationId: importaAuleCSV
+      tags:
+        - Aule
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          text/csv:
+            schema:
+              type: string
+              format: binary
+      responses:
+        200:
+          description: Importazione riuscita
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/aule/crea:
+    post:
+      summary: Crea aula
+      description: Operazione che permette di aggiungere una aula al sistema.
+      tags: 
+        - Aule
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aula'
+      responses:
+        201:
+          description: Aula creata con successo
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uri
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/aule/{aulaID}/attrezzature:
+    get:
+      summary: Lista attrezzature aula
+      description: Operazione che permette di ottenere una lista di attrezzature di una aula già presente nel sistema.
+      operationId: getAttrezzature
+      tags: 
+        - Aule
+      parameters:
+      - $ref: '#/components/parameters/aulaID'
+      responses:
+        200:
+          description: Lista ottenuta con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aula'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/aule/{aulaID}:
+    get:
+      summary: Info aula
+      description: Operazione che permette di ottenere le informazioni riguardo una aula già presente nel sistema.
+      operationId: getAula
+      tags:
+        - Aule
+      parameters:
+      - $ref: '#/components/parameters/aulaID'
+      responses:
+        '200':
+          description: Informazioni ottenute con successo 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aula'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/eventi/crea:
+    post:
+      summary: Crea evento
+      description: Operazione che permette di aggiungere un evento al sistema.
+      operationId: creaEvento
+      tags: 
+        - Eventi
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evento'
+      responses:
+        201:
+          description: Evento creato con successo
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uri
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/eventi/{eventoID}/modifica:
+    put:
+      summary: Modfica evento
+      description: Operazione che permette di modificare una evento già presente nel sistema.
+      operationId: updateEvento
+      tags: 
+        - Eventi
+      security:
+        - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/eventoID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evento'
+      responses:
+        204:
+          description: no content
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/eventi/{eventoID}:
+    get:
+      summary: Info evento
+      description: Operazione che permette di ottenere le informazioni riguardo un evento già presente nel sistema.
+      operationId: getEvento
+      tags:
+        - Eventi
+      parameters:
+      - $ref: '#/components/parameters/eventoID'
+      responses:
+        '200':
+          description: Informazioni ottenute con successo 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError' 
+  /rest/eventi/esporta/{dataInizio}/{dataFine}:
+    get:
+      summary: Esportazione eventi basati sulle date
+      description: Operazione che permette di esportare una lista di eventi selezionando un intervallo di tempo specifico.
+      operationId: esportaEventiCSV
+      tags:
+        - Collezioni
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/dataInizio'
+        - $ref: '#/components/parameters/dataFine'
+      responses:
+        200:
+          description: Esportazione avvenuta con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evento'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/collezioni/aule/{aulaID}/settimana/{data}:
+    get:
+      summary: Lista eventi settimanale
+      description: Operazione che permette di ottenere una lista di eventi settimanali di una determinata aula inserendo una data specifica.
+      operationId: getEventiByAulaAndSettimana
+      tags: 
+        - Collezioni
+      parameters:
+      - $ref: '#/components/parameters/aulaID'
+      - $ref: '#/components/parameters/data'
+      responses:
+        200:
+          description: Lista ottenuta con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evento'
+        404:
+          $ref: '#/components/responses/NotFoundError'   
+        500:
+          $ref: '#/components/responses/GeneralError'
+  /rest/collezioni/{areaID}/eventiTreOre:
+    get:
+      summary: Lista eventi delle prossime tre ore
+      description: Operazione che permette di ottenere una lista di eventi attuali e delle prossime tre ore di una intera area.
+      operationId: getEventiTreOre
+      tags: 
+        - Collezioni
+      parameters:
+      - $ref: '#/components/parameters/areaID'
+      responses:
+        200:
+          description: Lista ottenuta con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evento'
+        404:
+          $ref: '#/components/responses/NotFoundError'  
+        500:
+          $ref: '#/components/responses/GeneralError'
