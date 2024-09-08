@@ -15,17 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- sostituire a javaee nei vecchi progetti -->
   <dependencies>
-    <!-- nota: importare direttamente la piattaforma JakartaEE 9 (o superiore)
-            non è teoricamente corretto perchè Tomcat non la implementa completamente
-       <dependency>
-           <groupId>jakarta.platform</groupId>
-           <artifactId>jakarta.jakartaee-api</artifactId>
-           <version>10.0.0</version>
-           <scope>provided</scope>
-       </dependency>
-        -->
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
@@ -87,15 +77,15 @@
       <version>8.0.32</version>
     </dependency>
     <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
-        </dependency> 
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>0.11.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>0.11.5</version>
+    </dependency>
   </dependencies>
 
   <build>
