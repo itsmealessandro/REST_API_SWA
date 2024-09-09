@@ -1,0 +1,27 @@
+.logo {
+    background-image: url(../img/logo.png);
+    background-repeat: no-repeat;
+}
+
+.page-item.active .page-link {
+    background-color: black !important;
+    border-color: black !important;
+    color: white !important;
+}
+
+.page-link {
+    color: black !important;
+}
+
+#body {
+    background-color: #F6F6F6;
+    background-size: cover;
+    border-radius: 1rem;
+    height: 1000px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.logged{
+    pointer-events: none;
+}
