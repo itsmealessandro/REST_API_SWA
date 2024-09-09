@@ -10,22 +10,13 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -40,8 +31,8 @@ public class AuleRes {
     private static final String SQL_SELECT_AUTHOR = "SELECT * FROM author WHERE ID=?";
     private static final String I_AULA = "INSERT INTO Aula "
             + "(nome, luogo, edificio, piano, capienza, preseElettriche,"
-            + " preseRete, IDAttrezzatura, IDDipartimento, IDResponsabile ) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            + " preseRete, note, IDAttrezzatura, IDDipartimento, IDResponsabile ) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String U_AULA = "UPDATE Aula\n"
             + "SET IDDipartimento = ?\n"
@@ -66,6 +57,7 @@ public class AuleRes {
         aula.put("capienza", String.valueOf(rs.getInt("capienza")));
         aula.put("preseElettriche", String.valueOf(rs.getInt("preseElettriche")));
         aula.put("preseRete", String.valueOf(rs.getInt("preseRete")));
+        aula.put("note", rs.getString("note"));
         aula.put("attrezzaturaID", String.valueOf(rs.getInt("attrezzaturaID")));
         aula.put("dipartimentoID", String.valueOf(rs.getInt("dipartimentoID")));
         aula.put("responsabileID", String.valueOf(rs.getInt("responsabileID")));
@@ -83,17 +75,18 @@ public class AuleRes {
                 // Preparo la connessione al DB
                 Connection connection = getPooledConnection(); PreparedStatement ps = connection.prepareStatement(I_AULA)) {
 
-            ps.setNull(1, Types.NULL);
-            ps.setString(2, (String) a_map.get("nome"));
-            ps.setString(3, (String) a_map.get("luogo"));
-            ps.setString(4, (String) a_map.get("edificio"));
-            ps.setString(5, (String) a_map.get("piano"));
-            ps.setInt(6, Integer.valueOf((String) a_map.get("capienza")));
-            ps.setInt(7, Integer.valueOf((String) a_map.get("preseElettriche")));
-            ps.setInt(8, Integer.valueOf((String) a_map.get("preseRete")));
-            ps.setInt(6, Integer.valueOf((String) a_map.get("attrezzaturaID")));
-            ps.setInt(7, Integer.valueOf((String) a_map.get("dipartimentoID")));
-            ps.setInt(8, Integer.valueOf((String) a_map.get("responsabileID")));
+            ps.setNull(0, Types.NULL);
+            ps.setString(1, (String) a_map.get("nome"));
+            ps.setString(2, (String) a_map.get("luogo"));
+            ps.setString(3, (String) a_map.get("edificio"));
+            ps.setString(4, (String) a_map.get("piano"));
+            ps.setInt(5, Integer.valueOf((String) a_map.get("capienza")));
+            ps.setInt(6, Integer.valueOf((String) a_map.get("preseElettriche")));
+            ps.setInt(7, Integer.valueOf((String) a_map.get("preseRete")));
+            ps.setString(8, (String) a_map.get("note"));
+            ps.setInt(9, Integer.valueOf((String) a_map.get("attrezzaturaID")));
+            ps.setInt(10, Integer.valueOf((String) a_map.get("dipartimentoID")));
+            ps.setInt(11, Integer.valueOf((String) a_map.get("responsabileID")));
 
             ps.executeUpdate();
             return Response.ok("Operazione Riuscita").build();
@@ -175,5 +168,5 @@ public class AuleRes {
             throw new RESTWebApplicationException("DB: " + ex.getMessage());
         }
     }
-    
+
 }
