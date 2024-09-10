@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evento</title>
+  <link rel="stylesheet" href="pages/style.css">
+</head>
+
+<body>
+
+  <a href="pages/home.html" class="button">Home</a>
+  <br>
+  <br>
+  <h1>Recupera Evento</h1>
+  <label for="eventId">ID Evento:</label>
+  <input type="number" id="eventId">
+  <button onclick="getEventoByID()">Ottieni Evento</button>
+  <pre id="eventDetails"></pre>
+</body>
+
+<script src="RestAjax/getEvento.js"></script>
+
+</html>

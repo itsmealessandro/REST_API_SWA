@@ -9,6 +9,9 @@
       30
     </session-timeout>
   </session-config>
+  <welcome-file-list>
+    <welcome-file>pages/home.html</welcome-file>
+  </welcome-file-list>
 
   <!-- UTILIZZATO PER IL CONNECTION POOLING -->
   <!-- USED FOR CONNECTION POOLING -->
