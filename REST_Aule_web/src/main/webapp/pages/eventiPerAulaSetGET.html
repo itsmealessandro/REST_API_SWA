@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventi per Aula e Settimana</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 20px 0;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .url-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .url-list li {
+      margin: 5px 0;
+    }
+
+    .url-list a {
+      text-decoration: none;
+      color: #007BFF;
+      word-break: break-all;
+    }
+
+    .url-list a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Eventi per Aula e Settimana</h1>
+
+    <label for="aulaID">ID Aula:</label>
+    <input type="number" id="aulaID" required>
+
+    <label for="data">Data Inizio Settimana:</label>
+    <input type="date" id="data" required>
+
+    <button id="fetchButton">Carica Eventi</button>
+
+    <ul id="urlList" class="url-list"></ul>
+    <p id="errorMessage" class="error"></p>
+  </div>
+
+  <script>
+    document.getElementById('fetchButton').addEventListener('click', async function () {
+      const aulaID = document.getElementById('aulaID').value;
+      const data = document.getElementById('data').value;
+
+      if (!aulaID || !data) {
+        document.getElementById('errorMessage').textContent = 'Per favore inserisci sia l\'ID dell\'aula che la data.';
+        return;
+      }
+
+      const url = `http://localhost:8080/REST_Aule_web/rest/collezioni/aule/${aulaID}/settimana/${data}`;
+
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          const urlList = document.getElementById('urlList');
+          urlList.innerHTML = ''; // Svuota la lista esistente
+
+          data.forEach(url => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = url;
+            a.textContent = url;
+            li.appendChild(a);
+            urlList.appendChild(li);
+          });
+        } else {
+          throw new Error('Errore nel recupero degli eventi.');
+        }
+      } catch (error) {
+        document.getElementById('errorMessage').textContent = 'Errore: ' + error.message;
+      }
+    });
+  </script>
+</body>
+
+</html>
