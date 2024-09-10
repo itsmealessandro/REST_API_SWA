@@ -21,7 +21,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
-import static org.univaq.swa.template.resources.EventiRes.createEvento;
 
 @Path("aule")
 public class AuleRes {
@@ -29,7 +28,6 @@ public class AuleRes {
 
     private static final String DS_NAME = "java:comp/env/jdbc/myaule";
     private static final String SQL_SELECT_AULA_BY_ID = "SELECT * FROM Aula WHERE ID=?";
-    private static final String SQL_SELECT_AUTHOR = "SELECT * FROM author WHERE ID=?";
     private static final String I_AULA = "INSERT INTO Aula "
             + "(nome, luogo, edificio, piano, capienza, preseElettriche,"
             + " preseRete, note, IDAttrezzatura, IDDipartimento, IDResponsabile ) "
@@ -95,15 +93,8 @@ public class AuleRes {
             throw new RESTWebApplicationException("SQL: " + ex.getMessage());
         } catch (NamingException ex) {
             throw new RESTWebApplicationException("DB: " + ex.getMessage());
-
         }
       }
-    } catch (SQLException ex) {
-      throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-    } catch (NamingException ex) {
-      throw new RESTWebApplicationException("DB: " + ex.getMessage());
-    }
-  }
 
   @PUT
   @Consumes("application/json")
@@ -115,35 +106,10 @@ public class AuleRes {
         Connection connection = getPooledConnection();
         PreparedStatement ps = connection.prepareStatement(U_AULA)) {
 
-      ps.setInt(7, Integer.valueOf((String) a_map.get("dipartimentoID")));
+      ps.setInt(1, Integer.valueOf((String) a_map.get("dipartimentoID")));
 
       ps.executeUpdate();
       return Response.ok("Operazione Riuscita").build();
-    } catch (SQLException ex) {
-      throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-    } catch (NamingException ex) {
-      throw new RESTWebApplicationException("DB: " + ex.getMessage());
-    }
-  }
-
-  // Ritorna L'attrezzatura presente in un'Aula dato L'ID dell'Aula
-  @GET
-  @Path("{aID: [0-9]+}/attrezzature")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response attrezzatureAula(@PathParam("aulaID") int aID) throws RESTWebApplicationException {
-    try (
-        Connection connection = getPooledConnection(); // Preparo la Query con i valori presi dalla GET
-        PreparedStatement ps = connection.prepareStatement(SQL_SELECT_AULA_BY_ID)) {
-      ps.setInt(1, aID);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          Map<String, Object> attrezzature = new LinkedHashMap<>();
-          attrezzature.put("attrezzature", rs.getString("attrezzature"));
-          return Response.ok(attrezzature).build();
-        } else {
-          return Response.status(Response.Status.NOT_FOUND).build();
-        }
-      }
     } catch (SQLException ex) {
       throw new RESTWebApplicationException("SQL: " + ex.getMessage());
     } catch (NamingException ex) {

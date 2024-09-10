@@ -264,6 +264,7 @@ public class CollezioniRes {
     }
 
     //Importa aule in csv
+    /*
     @POST
     @Consumes("text/csv")
     @Path("importazione")
@@ -299,6 +300,6 @@ public class CollezioniRes {
             e.printStackTrace();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
-    }
+    }*/
 
 }
