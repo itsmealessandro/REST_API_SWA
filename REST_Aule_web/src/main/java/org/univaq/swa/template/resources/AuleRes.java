@@ -27,6 +27,7 @@ public class AuleRes {
 
   private static final String DS_NAME = "java:comp/env/jdbc/myaule";
   private static final String SQL_SELECT_AULA_BY_ID = "SELECT * FROM Aula WHERE ID=?";
+  private static final String SQL_SELECT_ATTREZZATURA_BY_ID = "SELECT * FROM Attrezzaturadisponibile WHERE ID=?";
   private static final String I_AULA = "INSERT INTO Aula "
       + "(nome, luogo, edificio, piano, capienza, preseElettriche,"
       + " preseRete, note, IDAttrezzatura, IDDipartimento, IDResponsabile ) "
@@ -56,9 +57,9 @@ public class AuleRes {
     aula.put("preseElettriche", String.valueOf(rs.getInt("preseElettriche")));
     aula.put("preseRete", String.valueOf(rs.getInt("preseRete")));
     aula.put("note", rs.getString("note"));
-    aula.put("attrezzaturaID", String.valueOf(rs.getInt("attrezzaturaID")));
-    aula.put("dipartimentoID", String.valueOf(rs.getInt("dipartimentoID")));
-    aula.put("responsabileID", String.valueOf(rs.getInt("responsabileID")));
+    aula.put("attrezzaturaID", String.valueOf(rs.getInt("IDattrezzatura")));
+    aula.put("dipartimentoID", String.valueOf(rs.getInt("IDdipartimento")));
+    aula.put("responsabileID", String.valueOf(rs.getInt("IDresponsabile")));
 
     // Restituzione della HashMap popolata
     return aula;
@@ -122,19 +123,28 @@ public class AuleRes {
   @GET
   @Path("{aID: [0-9]+}/attrezzature")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response attrezzatureAula(@PathParam("aulaID") int aID) throws RESTWebApplicationException {
+  public Response attrezzatureAula(@PathParam("aID") int aID) throws RESTWebApplicationException {
     try (
         Connection connection = getPooledConnection(); // Preparo la Query con i valori presi dalla GET
-        PreparedStatement ps = connection.prepareStatement(SQL_SELECT_AULA_BY_ID)) {
+        PreparedStatement ps = connection.prepareStatement(SQL_SELECT_AULA_BY_ID);
+        PreparedStatement psA = connection.prepareStatement(SQL_SELECT_ATTREZZATURA_BY_ID)) {
       ps.setInt(1, aID);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          Map<String, Object> attrezzature = new LinkedHashMap<>();
-          attrezzature.put("attrezzature", rs.getString("attrezzature"));
-          return Response.ok(attrezzature).build();
-        } else {
-          return Response.status(Response.Status.NOT_FOUND).build();
+          psA.setInt(1, rs.getInt("IDAttrezzatura"));
+          try (ResultSet rsA = psA.executeQuery()) {
+
+            if (rsA.next()) {
+              String nomeA = rsA.getString("nome");
+              Map<String, String> attrezzature = new LinkedHashMap<>();
+              attrezzature.put("attrezzatura", nomeA);
+              return Response.ok(attrezzature).build();
+
+            }
+
+          }
         }
+        return Response.status(Response.Status.NOT_FOUND).build();
       }
     } catch (SQLException ex) {
       throw new RESTWebApplicationException("SQL: " + ex.getMessage());

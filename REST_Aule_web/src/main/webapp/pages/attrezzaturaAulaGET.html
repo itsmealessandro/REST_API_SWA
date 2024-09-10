@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attrezzature dell'Aula</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 20px 0;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .list li {
+      margin: 5px 0;
+      padding: 10px;
+      background-color: #f2f2f2;
+      border-radius: 5px;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Attrezzatura dell'Aula</h1>
+
+    <label for="aulaID">ID Aula:</label>
+    <input type="number" id="aulaID" required>
+
+    <button id="fetchButton">Carica Attrezzatura</button>
+
+    <ul id="attrezzatureList" class="list"></ul>
+    <p id="errorMessage" class="error"></p>
+  </div>
+
+  <script>
+    document.getElementById('fetchButton').addEventListener('click', async function () {
+      const aulaID = document.getElementById('aulaID').value;
+
+      if (!aulaID) {
+        document.getElementById('errorMessage').textContent = 'Per favore, inserisci l\'ID dell\'aula.';
+        return;
+      }
+
+      const url = `http://localhost:8080/REST_Aule_web/rest/aule/${aulaID}/attrezzature`;
+
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          const attrezzature = await response.json();
+          const attrezzatureList = document.getElementById('attrezzatureList');
+          attrezzatureList.innerHTML = ''; // Svuota la lista esistente
+
+          // Aggiungi l'attrezzatura alla lista
+          const li = document.createElement('li');
+          li.textContent = `Attrezzatura: ${attrezzature.attrezzatura}`;
+          attrezzatureList.appendChild(li);
+
+        } else {
+          throw new Error('Errore nel recupero dell\'attrezzatura.');
+        }
+      } catch (error) {
+        document.getElementById('errorMessage').textContent = 'Errore: ' + error.message;
+      }
+    });
+  </script>
+</body>
+
+</html>
