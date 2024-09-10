@@ -56,3 +56,31 @@
     .button:hover {
       background-color: #0056b3;
     }
+
+    .url-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .url-list li {
+      margin: 5px 0;
+    }
+
+    .url-list a {
+      text-decoration: none;
+      color: #007BFF;
+      word-break: break-all;
+    }
+
+    .url-list a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
