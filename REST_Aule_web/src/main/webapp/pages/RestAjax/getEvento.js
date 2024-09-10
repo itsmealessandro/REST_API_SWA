@@ -1,4 +1,4 @@
-document.getElementById('fetchButton').addEventListener('click', async function() {
+async function getEvento() {
   console.log("premuto");
   const eID = document.getElementById('eID').value;
 
@@ -37,4 +37,4 @@ document.getElementById('fetchButton').addEventListener('click', async function(
   } catch (error) {
     document.getElementById('errorMessage').textContent = 'Errore: ' + error.message;
   }
-});
+}
