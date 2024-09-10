@@ -42,6 +42,8 @@ components:
     Evento:
       type: object
       properties:
+        id:
+          type: integer
         idMaster:
           type: integer
         nome:
