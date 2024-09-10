@@ -1,11 +1,24 @@
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 0;
+      padding: 0;
     }
 
     .container {
-      max-width: 600px;
-      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .section {
+      width: 45%;
+      margin-bottom: 20px;
+    }
+
+
+    h1 {
+      text-align: center;
     }
 
     .button {
@@ -81,7 +94,4 @@
       color: red;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
+
