@@ -6,50 +6,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
   <link rel="stylesheet" href="pages/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .section {
+      width: 45%;
+      margin-bottom: 20px;
+    }
+
+
+    h1 {
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Home</h1>
+    <div class="section">
+      <h1>Operazioni con le Aule</h1>
+      <a href="pages/login.html" class="button">Login/Logout</a>
+      <a href="pages/aulaGET.html" class="button">Lettura Informazioni Aula</a>
+      <a href="pages/attrezzaturaAulaGET.html" class="button">Attrezzatura Aula</a>
+      <a href="pages/nuovaAulaPOST.html" class="button">Inserimento Nuova Aula</a>
+      <a href="pages/aulaSetDipPUT.html" class="button">Assegnazione Aula a Gruppo</a>
+      <a href="pages/importaAuleCSV.html" class="button">Importazione CSV</a>
+      <a href="pages/esportaAuleCSV.html" class="button">Esportazione CSV</a>
+    </div>
 
-    <a href="pages/login.html" class="button">Login/Logout</a>
-    <br>
-    <br>
-    <br>
-    <a href="pages/aulaGET.html" class="button">Lettura Informazioni Aula</a>
-    <br>
-    <br>
-    <a href="pages/attrezzaturaAulaGET.html" class="button">Attrezzatura Aula</a>
-    <br>
-    <br>
-    <a href="pages/eventoGET.html" class="button">Lettura Informazioni Evento</a>
-    <br>
-    <br>
-    <a href="pages/eventiTreOreGET.html" class="button">Lista Eventi Attuali e Prossime 3 Ore</a>
-    <br>
-    <br>
-    <a href="pages/eventiPerAulaSetGET.html" class="button">Lista Eventi In un'aula per settimana</a>
-    <br>
-    <br>
-    <a href="pages/importaAuleCSV.html" class="button">Esportazione/Importazione CSV</a>
-    <br>
-    <br>
-    <a href="pages/nuovaAulaPOST.html" class="button">Inserimento Nuova Aula</a>
-    <br>
-    <br>
-    <a href="pages/aulaSetDipPUT.html" class="button">Assegnazione Aula a Gruppo</a>
-    <br>
-    <br>
-    <a href="pages/nuovoEventoPOST.html" class="button">Inserimento Nuovo Evento</a>
-    <br>
-    <br>
-    <a href="pages/modificaEventoPUT.html" class="button">Modifica Evento</a>
-    <br>
-    <br>
-    <a href="pages/aulaSetDipPUT.html" class="button">Lista Eventi per Aula e Settimana</a>
-    <br>
-    <br>
-    <a href="pages/export_eventi.html" class="button">Esportazione Eventi per Intervallo di Tempo</a>
+    <div class="section">
+      <h1>Operazioni con gli Eventi</h1>
+      <a href="pages/eventoGET.html" class="button">Lettura Informazioni Evento</a>
+      <a href="pages/eventiTreOreGET.html" class="button">Lista Eventi Attuali e Prossime 3 Ore</a>
+      <a href="pages/eventiPerAulaSetGET.html" class="button">Lista Eventi In un'aula per settimana</a>
+      <a href="pages/nuovoEventoPOST.html" class="button">Inserimento Nuovo Evento</a>
+      <a href="pages/modificaEventoPUT.html" class="button">Modifica Evento</a>
+      <a href="pages/export_eventi.html" class="button">Esportazione Eventi per Intervallo di Tempo</a>
+    </div>
   </div>
 </body>
 

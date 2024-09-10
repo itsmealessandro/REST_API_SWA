@@ -1,29 +1,40 @@
-async function getEventoByID() {
+document.getElementById('fetchButton').addEventListener('click', async function() {
+  console.log("premuto");
+  const eID = document.getElementById('eID').value;
 
-  // Ottieni l'ID dall'input dell'utente
-  const eID = document.getElementById('eventId').value;
+  if (!eID) {
+    document.getElementById('errorMessage').textContent = 'Per favore, inserisci l\'ID dell\'evento.';
+    return;
+  }
+
   const url = `http://localhost:8080/REST_Aule_web/rest/eventi/${eID}`;
 
-  // Debug: stampa l'URL nella console
-  console.log('URL:', url);
-
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-
+    const response = await fetch(url);
     if (response.ok) {
       const evento = await response.json();
-      document.getElementById('eventDetails').textContent = JSON.stringify(evento, null, 2);
-    } else if (response.status === 404) {
-      document.getElementById('eventDetails').textContent = 'Evento non trovato';
+      const eventDetails = document.getElementById('eventDetails');
+      eventDetails.innerHTML = ''; // Svuota i dettagli esistenti
+
+      // Aggiungi i dettagli dell'evento alla pagina
+      eventDetails.innerHTML = `
+                        <p><strong>ID:</strong> ${evento.ID}</p>
+                        <p><strong>Nome:</strong> ${evento.nome}</p>
+                        <p><strong>Ora Inizio:</strong> ${evento.oraInizio}</p>
+                        <p><strong>Ora Fine:</strong> ${evento.oraFine}</p>
+                        <p><strong>Descrizione:</strong> ${evento.descrizione}</p>
+                        <p><strong>Ricorrenza:</strong> ${evento.ricorrenza}</p>
+                        <p><strong>Data:</strong> ${evento.data}</p>
+                        <p><strong>Tipologia:</strong> ${evento.tipologia}</p>
+                        <p><strong>Responsabile ID:</strong> ${evento.responsabileID}</p>
+                        <p><strong>Corso ID:</strong> ${evento.corsoID}</p>
+                        <p><strong>Aula ID:</strong> ${evento.aulaID}</p>
+                    `;
+
     } else {
-      document.getElementById('eventDetails').textContent = 'Errore nel recupero dei dati';
+      throw new Error('Errore nel recupero dei dettagli dell\'evento.');
     }
   } catch (error) {
-    document.getElementById('eventDetails').textContent = 'Errore: ' + error.message;
+    document.getElementById('errorMessage').textContent = 'Errore: ' + error.message;
   }
-}
+});

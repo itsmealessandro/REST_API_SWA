@@ -4,43 +4,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crea Evento</title>
-  <script src="RestAjax/postNuovoEvento.js" defer></script>
+  <title>Inserisci Nuovo Evento</title>
+  <link rel="stylesheet" href="pages/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>Crea Nuovo Evento</h1>
-  <form id="eventoForm">
-    <label for="nome">Nome:</label>
-    <input type="text" id="nome" name="nome" required><br><br>
+  <div class="container">
+    <h1>Inserisci Nuovo Evento</h1>
 
-    <label for="oraInizio">Ora Inizio:</label>
-    <input type="text" id="oraInizio" name="oraInizio" required><br><br>
+    <form id="newEventForm">
+      <label for="nome">Nome Evento:</label>
+      <input type="text" id="nome" required>
 
-    <label for="oraFine">Ora Fine:</label>
-    <input type="text" id="oraFine" name="oraFine" required><br><br>
+      <label for="oraInizio">Ora Inizio:</label>
+      <input type="time" id="oraInizio" required>
 
-    <label for="descrizione">Descrizione:</label>
-    <input type="text" id="descrizione" name="descrizione" required><br><br>
+      <label for="oraFine">Ora Fine:</label>
+      <input type="time" id="oraFine" required>
 
-    <label for="data">Data:</label>
-    <input type="date" id="data" name="data" required><br><br>
+      <label for="descrizione">Descrizione:</label>
+      <textarea id="descrizione" rows="4" required></textarea>
 
-    <label for="tipologia">Tipologia:</label>
-    <input type="text" id="tipologia" name="tipologia" required><br><br>
+      <label for="ricorrenza">Ricorrenza:</label>
+      <input type="text" id="ricorrenza">
 
-    <label for="responsabileID">Responsabile ID:</label>
-    <input type="number" id="responsabileID" name="responsabileID" required><br><br>
+      <label for="data">Data:</label>
+      <input type="date" id="data" required>
 
-    <label for="corsoID">Corso ID:</label>
-    <input type="number" id="corsoID" name="corsoID" required><br><br>
+      <label for="dataFineRicorrenza">Data Fine Ricorrenza:</label>
+      <input type="date" id="dataFineRicorrenza">
 
-    <label for="aulaID">Aula ID:</label>
-    <input type="number" id="aulaID" name="aulaID" required><br><br>
+      <label for="tipologia">Tipologia Evento:</label>
+      <input type="text" id="tipologia">
 
-    <button type="button" onclick="createEvento()">Crea Evento</button>
-  </form>
-  <pre id="response"></pre>
+      <label for="responsabileID">Responsabile ID:</label>
+      <input type="number" id="responsabileID" required>
+
+      <label for="corsoID">Corso ID:</label>
+      <input type="number" id="corsoID" required>
+
+      <label for="aulaID">Aula ID:</label>
+      <input type="number" id="aulaID" required>
+
+      <button type="button" id="submitButton">Inserisci Evento</button>
+      <p id="errorMessage" class="error"></p>
+    </form>
+  </div>
+
+  <script src="RestAjax/postNuovoEvento.js"></script>
 </body>
 
 </html>
