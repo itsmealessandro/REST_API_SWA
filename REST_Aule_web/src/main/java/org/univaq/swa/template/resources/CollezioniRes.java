@@ -1,5 +1,7 @@
 package org.univaq.swa.template.resources;
 
+import static jakarta.ws.rs.core.Response.Status.values;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,8 +58,8 @@ public class CollezioniRes {
   private static final String S_AULE_BY_ID = "SELECT *\n"
       + " FROM Aula";
 
-  private static final String INSERT_AULA_SQL = "INSERT INTO aula"
-      + "(nome, luogo, edificio, piano, capienza, preseElettriche, preseDiRete, note, attrezzaturaID, dipartimentoID, responsabileID)"
+  private static final String INSERT_AULA_SQL = "INSERT INTO Aula"
+      + "(nome, luogo, edificio, piano, capienza, preseElettriche, preseRete, note, IDattrezzatura, IDdipartimento, IDresponsabile)"
       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   private static Connection getPooledConnection() throws NamingException, SQLException {
@@ -269,13 +271,14 @@ public class CollezioniRes {
   @Path("importazione")
   @Consumes("text/csv")
   public Response importaAuleCSV(@Context SecurityContext securityContext, InputStream csvFile) {
+
+    StringBuffer debugValues = new StringBuffer();
     try (Reader reader = new InputStreamReader(csvFile);
         BufferedReader bufferedReader = new BufferedReader(reader)) {
 
       String line;
       boolean firstLine = true; // Per saltare l'intestazione
       try (Connection connection = getPooledConnection()) {
-        connection.setAutoCommit(false); // Disabilita l'auto commit per gestire la transazione
 
         try (PreparedStatement ps = connection.prepareStatement(INSERT_AULA_SQL)) {
           while ((line = bufferedReader.readLine()) != null) {
@@ -284,6 +287,10 @@ public class CollezioniRes {
               continue;
             }
             String[] values = line.split(",");
+
+            for (String value : values) {
+              debugValues.append(value + "\n");
+            }
 
             ps.setString(1, values[0]); // Nome
             ps.setString(2, values[1]); // Luogo
@@ -297,14 +304,20 @@ public class CollezioniRes {
             ps.setInt(10, Integer.parseInt(values[9])); // DipartimentoID
             ps.setInt(11, Integer.parseInt(values[10])); // ResponsabileID
 
+            ps.executeUpdate();
+
           }
 
-          ps.executeUpdate();
-          connection.commit(); // Conferma la transazione
         } catch (SQLException ex) {
-          connection.rollback(); // Rollback in caso di errore
+          // Aggiungi l'errore SQL e i dati di debug alla risposta
+          String errorMsg = "Errore durante l'importazione dei dati.\n"
+              + "Dettagli SQL: " + ex.getMessage() + "\n"
+              + "Valori: " + debugValues.toString();
+
+          ex.printStackTrace(); // Stampa l'errore nei log del server
           return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-              .entity("Errore durante l'importazione dei dati.").build();
+              .entity(errorMsg)
+              .build();
         }
       } catch (SQLException ex) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore nella connessione al database.")

@@ -24,7 +24,7 @@ public class AuthHelpers {
   private static AuthHelpers instance = null;
 
   private static final String DS_NAME = "java:comp/env/jdbc/myaule";
-  private static final String AUTH_SQL = "SELECT * FROM user WHERE username=? and password=?";
+  private static final String AUTH_SQL = "SELECT * FROM Amministratore WHERE username=? and password=?";
 
   private static Connection getPooledConnection() throws NamingException, SQLException {
     InitialContext ctx = new InitialContext();
@@ -37,7 +37,6 @@ public class AuthHelpers {
   }
 
   public boolean authenticateUser(String username, String password) {
-
     try (
         // Preparo la connessione al DB
         Connection connection = getPooledConnection(); // Preparo la Query con i valori presi dalla GET
@@ -47,7 +46,7 @@ public class AuthHelpers {
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next())
           return true;
-        return true;
+        return false;
       }
 
     } catch (SQLException ex) {
