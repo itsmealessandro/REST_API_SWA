@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventi Tre Ore</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .url-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .url-list li {
+      margin: 5px 0;
+    }
+
+    .url-list a {
+      text-decoration: none;
+      color: #007BFF;
+      word-break: break-all;
+    }
+
+    .url-list a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Eventi nelle Prossime Tre Ore</h1>
+    <button id="fetchButton">Carica Eventi</button>
+    <ul id="urlList" class="url-list"></ul>
+    <p id="errorMessage" class="error"></p>
+  </div>
+
+  <script src="RestAjax/getEventiTreOre.js"></script>
+</body>
+
+</html>
