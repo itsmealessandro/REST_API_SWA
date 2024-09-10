@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inserisci Nuovo Evento</title>
-  <link rel="stylesheet" href="pages/style.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -75,6 +74,11 @@
 </head>
 
 <body>
+  <button
+    style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;"
+    onclick="window.location.href='http://localhost:8080/REST_Aule_web/';">
+    Torna alla Home
+  </button>
   <div class="container">
     <h1>Inserisci Nuovo Evento</h1>
 
@@ -91,14 +95,8 @@
       <label for="descrizione">Descrizione:</label>
       <textarea id="descrizione" rows="4" required></textarea>
 
-      <label for="ricorrenza">Ricorrenza:</label>
-      <input type="text" id="ricorrenza">
-
       <label for="data">Data:</label>
       <input type="date" id="data" required>
-
-      <label for="dataFineRicorrenza">Data Fine Ricorrenza:</label>
-      <input type="date" id="dataFineRicorrenza">
 
       <label for="tipologia">Tipologia Evento:</label>
       <input type="text" id="tipologia">
@@ -112,12 +110,11 @@
       <label for="aulaID">Aula ID:</label>
       <input type="number" id="aulaID" required>
 
-      <button type="button" id="submitButton">Inserisci Evento</button>
-      <p id="errorMessage" class="error"></p>
+      <button type="button" id="submitButton" onclick="createEvento()">Inserisci Evento</button>
+      <p id="response" class="error"></p>
     </form>
   </div>
 
   <script src="RestAjax/postNuovoEvento.js"></script>
-</body>
 
 </html>
