@@ -1,7 +1,10 @@
 package org.univaq.swa.template.resources;
 
-import jakarta.ws.rs.Consumes;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.Date;
@@ -21,6 +24,7 @@ import javax.sql.DataSource;
 
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -31,17 +35,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.univaq.swa.template.resources.AuleRes.createAula;
 
 @Path("collezioni")
 public class CollezioniRes {
@@ -62,6 +55,10 @@ public class CollezioniRes {
 
   private static final String S_AULE_BY_ID = "SELECT *\n"
       + " FROM Aula";
+
+  private static final String INSERT_AULA_SQL = "INSERT INTO aula"
+      + "(nome, luogo, edificio, piano, capienza, preseElettriche, preseDiRete, note, attrezzaturaID, dipartimentoID, responsabileID)"
+      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   private static Connection getPooledConnection() throws NamingException, SQLException {
     InitialContext ctx = new InitialContext();
@@ -268,51 +265,56 @@ public class CollezioniRes {
         .build();
   }
 
-  // Importa aule in csv
-  /*
-   * @POST
-   * 
-   * @Consumes("text/csv")
-   * 
-   * @Path("importazione")
-   * public Response importaAuleCSV(@Context UriInfo uriinfo,
-   * InputStream csvFile,
-   * 
-   * @Context SecurityContext securityContext) throws FileNotFoundException {
-   * 
-   * try (Reader reader = new InputStreamReader(csvFile); CSVParser csvParser =
-   * new CSVParser(reader, CSVFormat.DEFAULT.withHeader())) {
-   * for (CSVRecord csvRecord : csvParser) {
-   * String query =
-   * "INSERT INTO aula (nome, luogo, edificio, piano, capienza, preseElettriche, preseDiRete, note, attrezzaturaID, dipartimentoID, responsabileID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-   * ;
-   * try (Connection connection = getPooledConnection(); PreparedStatement ps =
-   * connection.prepareStatement(RETURN_GENERATED_KEYS)) {
-   * ps.setString(1, csvRecord.get("Nome"));
-   * ps.setString(2, csvRecord.get("Luogo"));
-   * ps.setString(3, csvRecord.get("Edificio"));
-   * ps.setString(4, csvRecord.get("Piano"));
-   * ps.setInt(5, Integer.parseInt(csvRecord.get("Capienza")));
-   * ps.setInt(6, Integer.parseInt(csvRecord.get("PreseElettriche")));
-   * ps.setInt(7, Integer.parseInt(csvRecord.get("PreseDiRete")));
-   * ps.setString(8, csvRecord.get("Note"));
-   * ps.setInt(9, Integer.parseInt(csvRecord.get("AttrezzaturaID")));
-   * ps.setInt(10, Integer.parseInt(csvRecord.get("DipartimentoID")));
-   * ps.setInt(11, Integer.parseInt(csvRecord.get("ResponsabileID")));
-   * 
-   * ps.executeUpdate();
-   * 
-   * } catch (SQLException ex) {
-   * throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-   * } catch (NamingException ex) {
-   * Logger.getLogger(CollezioniRes.class.getName()).log(Level.SEVERE, null, ex);
-   * }
-   * }
-   * } catch (IOException e) {
-   * e.printStackTrace();
-   * }
-   * return Response.status(Response.Status.NOT_FOUND).build();
-   * }
-   */
+  @POST
+  @Path("importazione")
+  @Consumes("text/csv")
+  public Response importaAuleCSV(@Context SecurityContext securityContext, InputStream csvFile) {
+    try (Reader reader = new InputStreamReader(csvFile);
+        BufferedReader bufferedReader = new BufferedReader(reader)) {
+
+      String line;
+      boolean firstLine = true; // Per saltare l'intestazione
+      try (Connection connection = getPooledConnection()) {
+        connection.setAutoCommit(false); // Disabilita l'auto commit per gestire la transazione
+
+        try (PreparedStatement ps = connection.prepareStatement(INSERT_AULA_SQL)) {
+          while ((line = bufferedReader.readLine()) != null) {
+            if (firstLine) {
+              firstLine = false; // Salta la prima riga di intestazione
+              continue;
+            }
+            String[] values = line.split(",");
+
+            ps.setString(1, values[0]); // Nome
+            ps.setString(2, values[1]); // Luogo
+            ps.setString(3, values[2]); // Edificio
+            ps.setString(4, values[3]); // Piano
+            ps.setInt(5, Integer.parseInt(values[4])); // Capienza
+            ps.setInt(6, Integer.parseInt(values[5])); // PreseElettriche
+            ps.setInt(7, Integer.parseInt(values[6])); // PreseDiRete
+            ps.setString(8, values[7]); // Note
+            ps.setInt(9, Integer.parseInt(values[8])); // AttrezzaturaID
+            ps.setInt(10, Integer.parseInt(values[9])); // DipartimentoID
+            ps.setInt(11, Integer.parseInt(values[10])); // ResponsabileID
+
+          }
+
+          ps.executeUpdate();
+          connection.commit(); // Conferma la transazione
+        } catch (SQLException ex) {
+          connection.rollback(); // Rollback in caso di errore
+          return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+              .entity("Errore durante l'importazione dei dati.").build();
+        }
+      } catch (SQLException ex) {
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore nella connessione al database.")
+            .build();
+      }
+
+      return Response.ok("Aule importate con successo.").build();
+    } catch (Exception e) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Errore durante l'importazione del file CSV.").build();
+    }
+  }
 
 }
