@@ -65,6 +65,33 @@ public class AuleRes {
     return aula;
   }
 
+  // Ritorna Un'Aula dato L'ID
+  @GET
+  @Path("{aID: [0-9]+}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAulaByID(@PathParam("aID") int aID) throws RESTWebApplicationException {
+    try {
+      HashMap<String, String> a_map;
+      try (
+          // Preparo la connessione al DB
+          Connection connection = getPooledConnection(); // Preparo la Query con i valori presi dalla GET
+          PreparedStatement ps = connection.prepareStatement(SQL_SELECT_AULA_BY_ID)) {
+        ps.setInt(1, aID);
+        try (ResultSet rs = ps.executeQuery()) {
+          if (rs.next()) {
+            a_map = createEvento(rs);
+            return Response.ok(a_map).build();
+          }
+          return Response.status(Response.Status.NOT_FOUND).build();
+        }
+      }
+    } catch (SQLException ex) {
+      throw new RESTWebApplicationException("SQL: " + ex.getMessage());
+    } catch (NamingException ex) {
+      throw new RESTWebApplicationException("DB: " + ex.getMessage());
+    }
+  }
+
   @POST
   @Consumes("application/json")
   @Path("nuovo")
