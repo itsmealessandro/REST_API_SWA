@@ -79,7 +79,7 @@ public class AuleRes {
         ps.setInt(1, aID);
         try (ResultSet rs = ps.executeQuery()) {
           if (rs.next()) {
-            a_map = createEvento(rs);
+            a_map = createAula(rs);
             return Response.ok(a_map).build();
           }
           return Response.status(Response.Status.NOT_FOUND).build();
