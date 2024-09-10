@@ -7,8 +7,10 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -80,8 +82,14 @@ public class EventiRes {
   }
 
   @GET
+  @Path("test")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response testEventi() {
+  public Response testEventi(@Context SecurityContext sContext) {
+    if (sContext.getUserPrincipal() == null) {
+      // L'utente non è autenticato, quindi nega l'accesso
+      return Response.status(Response.Status.UNAUTHORIZED).entity("Devi essere loggato per accedere a questa risorsa.")
+          .build();
+    }
     HashMap<String, String> testMap = new HashMap<>();
     testMap.put("myTest", "eventoTest");
 

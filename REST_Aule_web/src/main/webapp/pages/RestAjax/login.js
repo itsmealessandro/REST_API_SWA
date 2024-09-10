@@ -15,7 +15,8 @@ function submitLogin() {
   })
     .then(response => {
       if (response.ok) {
-        return response.text();
+        alert("Login Riuscito");
+        window.location = "/REST_Aule_web/";
       } else {
         throw new Error('Errore durante il login');
       }
