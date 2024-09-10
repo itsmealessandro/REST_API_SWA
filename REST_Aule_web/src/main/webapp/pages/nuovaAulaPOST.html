@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inserisci Nuova Aula</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Inserisci Nuova Aula</h1>
+
+    <form id="newAulaForm">
+      <label for="nome">Nome Aula:</label>
+      <input type="text" id="nome" required>
+
+      <label for="edificio">Edificio:</label>
+      <input type="text" id="edificio" required>
+
+      <label for="luogo">Luogo:</label>
+      <input type="text" id="luogo" required>
+
+      <label for="piano">Piano:</label>
+      <input type="text" id="piano">
+
+      <label for="capienza">Capienza:</label>
+      <input type="number" id="capienza" required>
+
+      <label for="preseElettriche">Prese Elettriche:</label>
+      <input type="number" id="preseElettriche">
+
+      <label for="preseRete">Prese Rete:</label>
+      <input type="number" id="preseRete">
+
+      <label for="note">Note:</label>
+      <textarea id="note" rows="4"></textarea>
+
+      <label for="attrezzaturaID">Attrezzatura ID:</label>
+      <input type="number" id="attrezzaturaID">
+
+      <label for="dipartimentoID">Dipartimento ID:</label>
+      <input type="number" id="dipartimentoID">
+
+      <label for="responsabileID">Responsabile ID:</label>
+      <input type="number" id="responsabileID">
+
+      <button type="button" id="submitButton">Inserisci Aula</button>
+      <p id="errorMessage" class="error"></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('submitButton').addEventListener('click', async function () {
+      const aula = {
+        nome: document.getElementById('nome').value,
+        edificio: document.getElementById('edificio').value,
+        luogo: document.getElementById('luogo').value,
+        piano: document.getElementById('piano').value,
+        capienza: document.getElementById('capienza').value,
+        preseElettriche: document.getElementById('preseElettriche').value,
+        preseRete: document.getElementById('preseRete').value,
+        note: document.getElementById('note').value,
+        attrezzaturaID: document.getElementById('attrezzaturaID').value,
+        dipartimentoID: document.getElementById('dipartimentoID').value,
+        responsabileID: document.getElementById('responsabileID').value
+      };
+
+      try {
+        const response = await fetch('http://localhost:8080/REST_Aule_web/rest/aule/nuovo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(aula)
+        });
+
+        if (response.ok) {
+          alert('Aula inserita con successo!');
+          document.getElementById('newAulaForm').reset();
+        } else {
+          throw new Error('Errore durante l\'inserimento dell\'aula.');
+        }
+      } catch (error) {
+        document.getElementById('errorMessage').textContent = 'Errore: ' + error.message;
+      }
+    });
+  </script>
+</body>
+
+</html>

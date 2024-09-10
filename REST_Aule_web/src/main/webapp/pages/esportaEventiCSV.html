@@ -4,8 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Esporta Aule in CSV</title>
-  <link rel="stylesheet" href="pages/style.css">
+  <title>Esporta Eventi in CSV</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -26,6 +25,20 @@
     h1 {
       text-align: center;
       margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
     button {
@@ -54,15 +67,31 @@
 
 <body>
   <div class="container">
-    <h1>Esporta Tutte le Aule in CSV</h1>
+    <h1>Esporta Eventi in CSV</h1>
 
-    <button type="button" id="exportButton">Esporta in CSV</button>
-    <p id="errorMessage" class="error"></p>
+    <form id="exportEventiForm">
+      <label for="startDate">Data Inizio:</label>
+      <input type="date" id="startDate" required>
+
+      <label for="endDate">Data Fine:</label>
+      <input type="date" id="endDate" required>
+
+      <button type="button" id="exportButton">Esporta in CSV</button>
+      <p id="errorMessage" class="error"></p>
+    </form>
   </div>
 
   <script>
     document.getElementById('exportButton').addEventListener('click', async function () {
-      const url = 'http://localhost:8080/REST_Aule_web/rest/collezioni/esporta';
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+
+      if (!startDate || !endDate) {
+        document.getElementById('errorMessage').textContent = 'Per favore, inserisci entrambe le date.';
+        return;
+      }
+
+      const url = `http://localhost:8080/REST_Aule_web/rest/collezioni/esporta/${encodeURIComponent(startDate)}/${encodeURIComponent(endDate)}`;
 
       try {
         const response = await fetch(url, {
@@ -78,12 +107,12 @@
           const blobUrl = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = blobUrl;
-          a.download = 'aule.csv';
+          a.download = 'eventi.csv';
           document.body.appendChild(a);
           a.click();
           a.remove();
         } else {
-          throw new Error('Errore durante l\'esportazione delle aule.');
+          throw new Error('Errore durante l\'esportazione degli eventi.');
         }
       } catch (error) {
         document.getElementById('errorMessage').textContent = 'Errore: ' + error.message;

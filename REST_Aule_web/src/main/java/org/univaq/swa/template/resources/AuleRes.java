@@ -75,7 +75,6 @@ public class AuleRes {
         Connection connection = getPooledConnection();
         PreparedStatement ps = connection.prepareStatement(I_AULA)) {
 
-      ps.setNull(0, Types.NULL);
       ps.setString(1, (String) a_map.get("nome"));
       ps.setString(2, (String) a_map.get("luogo"));
       ps.setString(3, (String) a_map.get("edificio"));

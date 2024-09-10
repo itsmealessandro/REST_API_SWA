@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Importa Aule da CSV</title>
+  <link rel="stylesheet" href="pages/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    .success {
+      color: green;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Importa Aule da CSV</h1>
+
+    <form id="importAuleForm">
+      <label for="fileUpload">Seleziona il file CSV:</label>
+      <input type="file" id="fileUpload" accept=".csv" required>
+
+      <button type="button" id="importButton">Importa</button>
+      <p id="message" class="error"></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('importButton').addEventListener('click', async function () {
+      const fileInput = document.getElementById('fileUpload');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        document.getElementById('message').textContent = 'Per favore, seleziona un file CSV.';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://localhost:8080/REST_Aule_web/rest/collezioni/importazione', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          document.getElementById('message').textContent = 'File importato con successo!';
+          document.getElementById('message').className = 'success';
+        } else {
+          throw new Error('Errore durante l\'importazione del file.');
+        }
+      } catch (error) {
+        document.getElementById('message').textContent = 'Errore: ' + error.message;
+        document.getElementById('message').className = 'error';
+      }
+    });
+  </script>
+</body>
+
+</html>
